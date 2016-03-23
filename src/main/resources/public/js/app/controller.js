@@ -2,36 +2,39 @@ var friendEditorController = friendEditorApp
 	.controller('friendEditorCtrl', function($scope, $http) {
 		$scope.nome = "André";
 		$scope.checkLogin = function() {
-			FB
-				.getLoginStatus(function(response) {
+			$("#loading").modal("show");
+
+			FB.getLoginStatus(function(response) {
 					if (response.status === 'connected') {
 						var userInfo = {
 							userId : response.authResponse.userID,
 							accessToken : response.authResponse.accessToken
 						}
 						saveFriends(userInfo);
+						$("#loading").modal("hide");
 						return true;
 					} else if (response.status === 'not_authorized') {
 						console.log("Not authorized");
+						$("#loading").modal("hide");
 						return false;
 					} else {
 						console.log("Tentando Login");
-						FB
-							.login(function(response) {
-								if (response.authResponse) {
-									var userInfo = {
-										userId : response.authResponse.userID,
-										accessToken : response.authResponse.accessToken
-									}
-									saveFriends(userInfo);
-									return true;
-								} else {
-									alert("Não foi possivel efetuar o login no facebook");
-									return false;
+						FB.login(function(response) {
+							if (response.authResponse) {
+								var userInfo = {
+									userId : response.authResponse.userID,
+									accessToken : response.authResponse.accessToken
 								}
-							}, {
-								scope : "email, user_friends"
-							});
+								saveFriends(userInfo);
+								return true;
+							} else {
+								alert("Não foi possivel efetuar o login no facebook");
+								return false;
+							}
+							$("#loading").modal("hide");
+						}, {
+							scope : "email, user_friends"
+						});
 					}
 				});
 		}

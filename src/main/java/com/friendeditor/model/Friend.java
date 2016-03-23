@@ -6,6 +6,7 @@
 package com.friendeditor.model;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,61 +15,80 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
  * @author lima_
  */
 @Entity
-@Table(name = "USER_FRIENDS")
+@Table(name = "USER_FRIENDS", uniqueConstraints = { @UniqueConstraint(columnNames = { "FB_ID", "USER_ID" }) })
 @SequenceGenerator(name = "USER_FRIENDS_SEQ", initialValue = 1, sequenceName = "USER_FRIENDS_SEQ")
 public class Friend implements Serializable {
 
-    @Id
-    @Column(name = "ID")
-    @GeneratedValue(generator = "USER_FRIENDS_SEQ")
-    private Long id;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6506169633772482415L;
 
-    @Column(name = "FB_ID")
-    private Long fbId;
+	@Id
+	@Column(name = "ID")
+	@GeneratedValue(generator = "USER_FRIENDS_SEQ")
+	private Long id;
 
-    @Column(name = "NAME")
-    private String name;
+	@Column(name = "FB_ID")
+	private Long fbId;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private User user;
+	@Column(name = "NAME")
+	private String name;
 
-    public Long getId() {
-        return id;
-    }
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "USER_ID")
+	private User user;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Friend() {
+		// TODO Auto-generated constructor stub
+	}
 
-    public Long getFbId() {
-        return fbId;
-    }
+	public Friend(String name, Long fbId, User user) {
+		this.name = name;
+		this.fbId = fbId;
+		this.user = user;
+	}
 
-    public void setFbId(Long fbId) {
-        this.fbId = fbId;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public Long getFbId() {
+		return fbId;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public void setFbId(Long fbId) {
+		this.fbId = fbId;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 }

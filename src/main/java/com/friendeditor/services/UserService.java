@@ -1,6 +1,6 @@
 package com.friendeditor.services;
 
-import org.springframework.data.domain.Page;
+import java.util.List;
 
 import com.friendeditor.model.Friend;
 import com.friendeditor.model.User;
@@ -9,10 +9,10 @@ public interface UserService {
 
 	User saveUserAndFriends(User user, String token);
 	
-	void deleteUser(User user);
+	void deleteUser(Long fbId);
 	
 	User findUser(Long fbId);
 	
-	Page<Friend> findUserFriends(Long fbId);
+	List<Friend> findUserFriends(Long fbId);
 	
 }
