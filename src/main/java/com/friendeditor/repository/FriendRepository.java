@@ -11,11 +11,11 @@ import com.friendeditor.model.Friend;
 
 public interface FriendRepository extends JpaRepository<Friend, Long> {
 
-	@Query("from Friend f where f.user.fbId = :fbId")
-	List<Friend> findFriendsByUser(@Param("fbId") Long userId);
+    @Query("from Friend f where f.user.fbId = :fbId")
+    List<Friend> findFriendsByUser(@Param("fbId") Long userId);
 
-	@Query("delete from Friend f where f.user.fbId = :fbId")
-	@Modifying
-	void deleteAllFromUser(Long fbId);
+    @Query("delete from Friend f where f.user.fbId = :fbId")
+    @Modifying
+    void deleteAllFromUser(@Param("fbId") Long fbId);
 
 }

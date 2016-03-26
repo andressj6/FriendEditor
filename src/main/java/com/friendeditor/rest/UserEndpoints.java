@@ -33,33 +33,35 @@ import com.friendeditor.services.UserService;
 @RequestMapping("/users")
 public class UserEndpoints {
 
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private UserService userService;
 
-	@RequestMapping(value = "/{userFbId}/friends", method = RequestMethod.GET)
-	@ResponseBody
-	public ResponseEntity<List<Friend>> getFriendsByUser(@PathVariable String userFbId) {
-		return ResponseEntity.ok(userService.findUserFriends(Long.parseLong(userFbId)));
-	}
+    @RequestMapping(value = "/{userFbId}/friends", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<List<Friend>> getFriendsByUser(@PathVariable String userFbId) {
+        //could return "User not found" and a different httpStatus (such as No Content)
+        return ResponseEntity.ok(userService.findUserFriends(Long.parseLong(userFbId)));
+    }
 
-	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> saveUserAndFriends(@RequestBody Map<String, String> params) {
-		try {
-			User user = new User();
-			user.setFbId(Long.parseLong(params.get("userId")));
-			userService.saveUserAndFriends(user, params.get("accessToken").toString());
-			return ResponseEntity.ok().build();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-		}
-	}
+    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> saveUserAndFriends(@RequestBody Map<String, String> params) {
+        //Generic try... lots of exceptions can happen, but in this case, the "invalid token" is the main issue
+        try {
+            User user = new User();
+            //receives a json from the frontEnd
+            user.setFbId(Long.parseLong(params.get("userId")));
+            userService.saveUserAndFriends(user, params.get("accessToken"));
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 
-	@RequestMapping(value = "/{userFbId}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteUserAndFriends(@PathVariable Long userFbId) {
-		userService.deleteUser(userFbId);
-		
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-	}
+    @RequestMapping(value = "/{userFbId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteUserAndFriends(@PathVariable Long userFbId) {
+        userService.deleteUser(userFbId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
 }
